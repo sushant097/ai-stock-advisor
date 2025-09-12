@@ -399,7 +399,7 @@ with companies_tab:
 
 # -------- AI Report Tab --------
 with ai_report_tab:
-    st.markdown("Generate a consolidated, investor‑friendly report. Optionally provide a Google API key in the sidebar to enable AI reasoning.")
+    st.markdown("Generate a consolidated, investor‑friendly report. This may take a few moments.")
     if run_btn:
         if not symbols:
             st.error("Please enter at least one symbol.")

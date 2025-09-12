@@ -31,7 +31,9 @@ This project helps investors make smarter decisions by combining:
 
 ## 🖼️ Flow Diagram
 
-![Flow Diagram](/images/block_diagram.png)
+<p align="center">
+  <img src="./images/block_diagram.png" alt="Flow Diagram" width="400" height="400"/>
+</p>
 
 ---
 
