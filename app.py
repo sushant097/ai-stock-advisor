@@ -109,11 +109,18 @@ def fetch_company_news(symbol: str, limit: int = 5) -> list[dict]:
 # =========================
 # Basic Quant Helpers
 # =========================
-def six_month_change(prices: pd.DataFrame) -> pd.Series:
+
+def period_change(prices: pd.DataFrame) -> pd.Series:
+    """
+    Percent change from the first to the last row of `prices`,
+    regardless of whether the fetched period is 3mo/6mo/ytd/1y/2y.
+    Returns a sorted Series (desc).
+    """
     if prices.empty:
         return pd.Series(dtype=float)
-    first = prices.ffill().bfill().iloc[0]
-    last = prices.ffill().bfill().iloc[-1]
+    filled = prices.ffill().bfill()
+    first = filled.iloc[0]
+    last = filled.iloc[-1]
     return (last / first - 1.0).sort_values(ascending=False)
 
 # =========================
@@ -177,7 +184,7 @@ def compare_stocks(symbols: List[str], period: str = "6mo") -> Dict[str, float]:
     prices = fetch_history(symbols, period=period)
     if prices.empty:
         return {}
-    returns = six_month_change(prices)
+    returns = period_change(prices)
     return {sym: float(returns.get(sym, float("nan"))) for sym in symbols}
 
 
@@ -319,6 +326,7 @@ st.markdown(
 # =========================
 overview_tab, companies_tab, ai_report_tab = st.tabs(["Overview", "Company Profiles", "AI Report"])
 
+
 # -------- Overview Tab --------
 with overview_tab:
     prices = fetch_history(symbols, period=period, interval=interval)
@@ -326,12 +334,21 @@ with overview_tab:
     if prices.empty:
         st.warning("No price data found. Try different symbols or period.")
     else:
-        # KPI cards (6m/selected period change)
-        returns = six_month_change(prices)
-        kpi_cols = st.columns(min(4, len(symbols)))
-        for i, sym in enumerate(returns.index[: len(kpi_cols) ]):
-            with kpi_cols[i]:
-                st.metric(label=f"{sym} Return", value=f"{returns[sym]*100:.2f}%")
+        # KPI cards for selected period change
+        returns = period_change(prices)  # sorted desc
+        cols_per_row = 4  # adjust to taste (e.g., 5)
+
+        symbols_sorted = list(returns.index)
+        for start in range(0, len(symbols_sorted), cols_per_row):
+            batch = symbols_sorted[start:start + cols_per_row]
+            row = st.columns(len(batch))
+            for i, sym in enumerate(batch):
+                with row[i]:
+                    st.metric(
+                        label=f"{sym} Return ({period})",
+                        value=f"{returns[sym]*100:.2f}%"
+                    )
+
 
         # Chart
         chart_df = prices.copy().ffill().bfill()
@@ -350,11 +367,20 @@ with overview_tab:
         fig.update_layout(
             title=f"Price Comparison ({period}{', normalized' if normalize else ''})",
             xaxis_title="Date",
-            yaxis_title="Indexed Level" if normalize else "Price (USD)",
-            template="plotly_dark" if st.get_option("theme.base") == "dark" else None,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-            margin=dict(l=20, r=20, t=60, b=20),
-        )
+            yaxis=dict(
+                title="Indexed Level" if normalize else "Price (USD)",
+                tickfont=dict(size=12),
+                automargin=True
+        ),
+        xaxis=dict(
+            tickfont=dict(size=12),
+            automargin=True
+        ),
+        template="plotly_white",  # or "plotly_dark" if in dark mode
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        margin=dict(l=60, r=30, t=60, b=40),  # extra left margin so label isn’t squeezed
+    )
+
         st.plotly_chart(fig, use_container_width=True)
 
         # Correlation heatmap
