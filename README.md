@@ -8,9 +8,7 @@
 
 ## 🌟 Preview
 
-| Dashboard | Overview | AI Report |
-|-----------|----------|-----------|
-| ![](./images/screenshot_dashboard.png) | ![](./images/screenshot_companyprofiles.png) | ![](./images/screenshot_report.png) |
+![](./images/ai-stock-advisor.gif)
 
 ---
 
