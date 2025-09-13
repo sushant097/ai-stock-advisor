@@ -1,9 +1,9 @@
 # ai-stock-advisor
 ## 📈🤖 AI-Powered Stock Investment Advisor
-
-
+---
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)](https://www.python.org/)  [![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit)](https://streamlit.io/)   [![Plotly](https://img.shields.io/badge/Plotly-Charts-3F4F75?logo=plotly)](https://plotly.com/python/)   [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)   [![Status](https://img.shields.io/badge/AI%20Mode-Optional-lightgrey?logo=googlecloud)]()  
 
+![](images/ai-stock-advisor.png)
 ---
 
 ## 🌟 Preview
