@@ -62,7 +62,7 @@ This project helps investors make smarter decisions by combining:
 
 ```
 
-.
+ai-stock-advisor
 ├── app.py                # Main Streamlit app
 ├── requirements.txt      # Dependencies
 ├── .env.example          # Example environment file
